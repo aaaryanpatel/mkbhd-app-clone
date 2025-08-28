@@ -3,7 +3,9 @@ import React, { useCallback, useRef } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-export const DownloadPicture = () => {
+export const DownloadPicture = ({onClose}: {
+  onClose: () => void;
+}) => {
   // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -12,15 +14,18 @@ export const DownloadPicture = () => {
     console.log('handleSheetChanges', index);
   }, []);
 
-  // renders
+  // renders-
   return (
     <GestureHandlerRootView style={styles.container}>
       <BottomSheet
+      onClose={onClose}
       
-      snapPoints={['100%', '100%']}
+      snapPoints={['99%']}
         ref={bottomSheetRef}
         onChange={handleSheetChanges}
-      >
+        enablePanDownToClose={true}
+        handleIndicatorStyle={{height: 0}}
+        >
         <BottomSheetView style={styles.contentContainer}>
           <Text>Awesome 🎉</Text>
         </BottomSheetView>
