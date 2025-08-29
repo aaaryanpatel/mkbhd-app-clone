@@ -1,10 +1,11 @@
+import { Wallpaper } from '@/hooks/useWallpapers';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { useCallback, useRef } from 'react';
-import { StyleSheet, Text } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Button, Image, StyleSheet } from 'react-native';
 
-export const DownloadPicture = ({onClose}: {
+export const DownloadPicture = ({onClose, wallpaper}: {
   onClose: () => void;
+  wallpaper: Wallpaper;
 }) => {
   // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -14,23 +15,31 @@ export const DownloadPicture = ({onClose}: {
     console.log('handleSheetChanges', index);
   }, []);
 
-  // renders-
+  // renders-  
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <BottomSheet
-      onClose={onClose}
+    
+    <BottomSheet
+    onClose={onClose}
+    
+    snapPoints={["95%"]}
+      ref={bottomSheetRef}
+      onChange={handleSheetChanges}
+      enablePanDownToClose={true}
+      handleIndicatorStyle={{height: 0}}
+      handleStyle={{height: 0}}
       
-      snapPoints={['99%']}
-        ref={bottomSheetRef}
-        onChange={handleSheetChanges}
-        enablePanDownToClose={true}
-        handleIndicatorStyle={{height: 0}}
-        >
-        <BottomSheetView style={styles.contentContainer}>
-          <Text>Awesome 🎉</Text>
-        </BottomSheetView>
-      </BottomSheet>
-    </GestureHandlerRootView>
+      >
+      <BottomSheetView style={styles.contentContainer}>
+        <Image 
+          style={styles.image} 
+          source={{uri: wallpaper.url}} 
+          onError={(error) => console.log('Image load error:', error)}
+          onLoad={() => console.log('Image loaded successfully')}
+        />
+        <Button title="Download"></Button>
+      </BottomSheetView>
+    </BottomSheet>
+    
   );
 };
 
@@ -39,11 +48,20 @@ const styles = StyleSheet.create({
     flex: 1,
     
     backgroundColor: 'grey',
-  },
+  },       
   contentContainer: {
     flex: 1,
-    padding: 36,
-    alignItems: 'center',
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 20
   },
+  image: {
+    width: "80%",
+    height: 500,
+    resizeMode: "contain",
+    backgroundColor: "#f0f0f0",
+    borderRadius:20
+
+  }
 });
 

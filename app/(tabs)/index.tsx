@@ -1,36 +1,95 @@
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { StatusBar, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+// ===========================
+// Imports
+// ===========================
+import { DownloadPicture } from "@/components/BottomSheet";
+import { ImageCard } from "@/components/ImageCard";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ThemedView } from "@/components/ThemedView";
+import { useWallpapers, Wallpaper } from "@/hooks/useWallpapers";
+import { useState } from "react";
+import { Image, StyleSheet, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const Tab = createMaterialTopTabNavigator();
 
-export default function ForYou() {
+// ===========================
+// Screen Component
+// ===========================
+export default function Explore() {
+  // ----- Data / State -----
+  const wallpapers = useWallpapers();
+  const [selectedWallpaper, setSelectedWallpaper] = useState<null | Wallpaper>(null)
+
+  // ----- Render -----
   return (
-    
-    <SafeAreaView style={{ flex: 1, backgroundColor:"#fff"}} edges={["top"]}>
-    <StatusBar barStyle="default" />
+    <SafeAreaView style={{ flex: 1 }}>
 
-    <Tab.Navigator>
-      <Tab.Screen name="Library" component={HomeScreen} />
-      <Tab.Screen name="Liked" component={SettingsScreen} />
-      <Tab.Screen name="Suggested" component={SettingsScreen} />
+      <ParallaxScrollView
+        headerBackgroundColor={{ dark: "black", light: "white" }}
+        headerImage={
+          <Image
+            style={{ flex: 1 }}
+            source={{ uri: wallpapers[0]?.url ?? "" }}
+          />
+        }
+      >
+        <ThemedView style={styles.container}>
+          
+          {/* ===== Left Column ===== */}
+          <ThemedView style={styles.innerContainer}>
+            <FlatList
+              data={wallpapers.filter((_, index) => index % 2 === 0)}
+              renderItem={({ item }) => 
+                <View style={styles.imageContainer}>
+                  <ImageCard  onPress={() => {
+                    setSelectedWallpaper(item)
+                  }} wallpaper={item} />
+                </View>
+              }
+              keyExtractor={item => item.name}
+            />
+          </ThemedView>
 
-    </Tab.Navigator>
-    
+          {/* ===== Right Column ===== */}
+          <ThemedView style={styles.innerContainer}>
+            <FlatList
+              data={wallpapers.filter((_, index) => index % 2 === 1)}
+              renderItem={({ item }) => 
+                <View style={styles.imageContainer}>
+                  <ImageCard onPress={() => {
+                    setSelectedWallpaper(item)
+
+                  }} wallpaper={item} />
+                </View>
+              } 
+              keyExtractor={item => item.name}
+            />
+          </ThemedView>
+
+        </ThemedView>
+      </ParallaxScrollView>
+      {selectedWallpaper && <DownloadPicture wallpaper={selectedWallpaper} onClose={() => setSelectedWallpaper(null)}/>}
+
     </SafeAreaView>
-    
   );
 }
 
-function HomeScreen() {
-    return <View>
-        <Text>Hi there form home screen</Text>
-    </View>
-}
 
-function SettingsScreen() {
-    return <View>
-        <Text>Hi there form setting screen</Text>
-    </View>
-}
-
+// ===========================
+// Styles
+// ===========================
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    flex: 1,
+    backgroundColor: "red",
+    width: "100%"
+  },
+  innerContainer: {
+    flex: 1,
+    padding: 4
+  },
+  imageContainer: {
+    paddingVertical: 10,
+  }
+});
