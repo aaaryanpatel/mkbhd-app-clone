@@ -1,7 +1,8 @@
 import { Wallpaper } from '@/hooks/useWallpapers';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { useCallback, useRef } from 'react';
-import { Button, Image, StyleSheet } from 'react-native';
+import { Button, Image, StyleSheet, View } from 'react-native';
 
 export const DownloadPicture = ({onClose, wallpaper}: {
   onClose: () => void;
@@ -25,8 +26,9 @@ export const DownloadPicture = ({onClose, wallpaper}: {
       ref={bottomSheetRef}
       onChange={handleSheetChanges}
       enablePanDownToClose={true}
-      handleIndicatorStyle={{height: 0}}
-      handleStyle={{height: 0}}
+      handleIndicatorStyle={{height: 0, display: "none"}}
+      handleStyle={{height: 0, backgroundColor: "rgba(0,0,0,0)"}} 
+      
       
       >
       <BottomSheetView style={styles.contentContainer}>
@@ -36,6 +38,13 @@ export const DownloadPicture = ({onClose, wallpaper}: {
           onError={(error) => console.log('Image load error:', error)}
           onLoad={() => console.log('Image loaded successfully')}
         />
+        <View style={{position: "absolute"}}>
+          <Ionicons 
+            name={"heart"}
+            size={18}
+            // color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
+          />
+        </View>
         <Button title="Download"></Button>
       </BottomSheetView>
     </BottomSheet>

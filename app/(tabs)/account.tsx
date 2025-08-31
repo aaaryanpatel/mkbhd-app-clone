@@ -1,11 +1,13 @@
 // app/(tabs)/account.tsx
 import { DownloadPicture } from "@/components/BottomSheet";
+import { useWallpapers } from "@/hooks/useWallpapers";
 import { useState } from "react";
 import { Button, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Account() {
   const [pictureOpen, setPictureOpen] = useState(false);
+  const wallpapers = useWallpapers();
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -18,7 +20,7 @@ export default function Account() {
           setPictureOpen(true);
         }}
         />
-      {pictureOpen && <DownloadPicture onClose={() => setPictureOpen(false)} /> }
+      {pictureOpen && <DownloadPicture wallpaper={wallpapers[0]} onClose={() => setPictureOpen(false)} /> }
       {/* if pictureOpen is true then render this downloadPicture */}
         </View>
     </SafeAreaView>
